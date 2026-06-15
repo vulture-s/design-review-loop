@@ -73,16 +73,33 @@ User uploads the loose files + pastes the bundle + a one-line instruction:
 First turn, run a **brand-guard self-test**: without reading the files, ask the agent
 to state what the product/brand is. Wrong answer → have it re-read before starting.
 
-### Stage 3 — RETURN / INGEST (CLI agent, local)
+### Stage 3 — RETURN / INGEST / RECONCILE (CLI agent, local)
 
-1. User **downloads the deliverables back into the repo** (a dedicated
-   `.../<feature>-design-return/` or alongside the outbound audit dir).
+1. **Version-control the SSOT.** Download the deliverable into the repo — but
+   **search the repo first**: a deliverable handed off long ago is often never
+   committed (only its design *tokens* were copied into the code), with the
+   original living only on a designer's machine / a NAS / a download folder. If it
+   is absent, the visual SSOT is unversioned — fix that now. A heavy bundle (a
+   self-contained React/Babel design-artifact is often 5–10 MB) → commit a
+   **lightweight record** instead of the raw file: rendered screenshots of every
+   screen + a reference doc (filename, size, **sha256**, canonical store path,
+   provenance). See `references/design-build-reconcile.md` §1.
 2. **Verify completeness** against the contract, item by item. Missing item →
    send back to design; do not fill it in from imagination.
-3. **Severity triage**: sort the modification list by 🔴/🟡/⚪ → a prioritized
-   implementation list.
-4. Operator review against your own decision framework.
-5. Return structure spec: `references/return-package-structure.md`.
+3. **Three-layer alignment matrix (design ↔ backend API ↔ frontend).** One row per
+   screen/feature, mark each layer ✅/🟡/❌, and classify every gap by the layer it
+   lives in. Key discipline: a control in the design must map to a **real API
+   parameter**, not merely to engine capability — a polished dialog often unifies
+   several services' settings, so "the engine can do it" ≠ "the API exposes it".
+   Never fake data the backend can't produce; drop it and log the deviation. See
+   `references/design-build-reconcile.md` §2.
+4. **Build-target lock**: build against the **design SSOT itself**, never an
+   earlier hand-ported mock (a second-hand transcription that has already drifted).
+5. **Severity triage → ordered segments**: sort gaps 🔴/🟡/⚪ → a prioritized build
+   plan, each segment tagged by which layer(s) it touches.
+6. Operator review against your own decision framework.
+7. Return structure spec: `references/return-package-structure.md`; full reconcile
+   procedure: `references/design-build-reconcile.md`.
 
 ### Stage 4 — DISPATCH (CLI agent → implementer)
 
@@ -118,6 +135,7 @@ to state what the product/brand is. Wrong answer → have it re-read before star
 - `references/deliverable-contract.md` — what design must return (define in Stage 1, verify in Stage 3)
 - `references/return-package-structure.md` — the shape returned work lands in (Stage 3)
 - `references/web-sandbox-limits.md` — accepted upload formats + why path/zip fail
+- `references/design-build-reconcile.md` — **Stage 3 reconcile**: version-control the SSOT, the design↔backend↔frontend matrix, build-target lock, gap→segments
 
 ## Retro Log
 
@@ -127,3 +145,10 @@ to state what the product/brand is. Wrong answer → have it re-read before star
   design agent a path or a zip is useless — sandbox can't read disk + rejects zip → the
   `stage-handover.sh` flat-file discipline; (2) deliverables live only in the sandbox
   until downloaded → the Stage 3 ingest leg.
+- **Design-SSOT reconcile**: a redesign deliverable handed off months earlier had only
+  its *tokens* extracted into the code — the original (a multi-MB design-artifact bundle)
+  was never committed, living only on a NAS. → Stage 3.1 "search the repo first; commit
+  screenshots + a reference for heavy bundles". A three-layer matrix then surfaced an
+  ingest setup dialog whose controls spanned two backend services while the API exposed
+  only a subset → Stage 3.3 "controls must map to real API params, not engine
+  capability". Build target was locked to the SSOT, not the earlier hand-ported mock.

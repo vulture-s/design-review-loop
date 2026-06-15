@@ -4,6 +4,8 @@ A reusable **Claude Code skill** for handing visual/design work to a web-sandbox
 design agent (e.g. Claude on claude.ai, "Claude Design") and bringing the result
 back into your repo — without losing a round-trip to the same avoidable mistakes.
 
+> 🌐 **English** | [繁體中文](README.zh-TW.md)
+
 ## The problem this solves
 
 A CLI coding agent can grep, refactor across files, and read your whole repo — but
@@ -26,7 +28,7 @@ back in your repo in a predictable shape.
 ```
 1 OUTBOUND   gather state + evidence → stage flat files to desktop for upload
 2 DESIGN     you upload → design agent audits + rebuilds → returns deliverables
-3 RETURN     you download deliverables → ingest into repo → verify vs contract
+3 RETURN     download → version-control the SSOT → reconcile design↔backend↔frontend → verify
 4 DISPATCH   prioritize by severity → hand critical fixes to the implementer first
 5 CLOSEOUT   post-deploy verify against ground truth → log it
 ```
@@ -66,6 +68,7 @@ into `~/Desktop/<dest-name>/`, stitches all `.md` into a single
 | `references/deliverable-contract.md` | What the design agent must return (define ⟶ verify) |
 | `references/return-package-structure.md` | The shape returned work lands in |
 | `references/web-sandbox-limits.md` | Why path/zip don't work; accepted formats |
+| `references/design-build-reconcile.md` | Stage 3 reconcile: version-control the SSOT, design↔backend↔frontend matrix, build-target lock |
 | `templates/handover-package.template.md` | The master brief you hand over |
 
 ## Test
